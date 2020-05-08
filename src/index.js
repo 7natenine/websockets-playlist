@@ -1,12 +1,27 @@
-const express = require('express')
+const express = require('express');
+const socket = require('socket.io');
 
 var app = express(); 
-var server = app.listen(4000,function(){ 
-  console.log('listening to request on port 40000');
+var server = app.listen(3000,function(){ 
+  console.log('listening to request on port 3000');
 });
 
 
-app.use(express.static('src'));
+app.use(express.static('public'));
 
 
+//socket setup 
+var io = socket(server);
+
+io.on('connection',function(socket){
+  
+  socket.on('chat',function(data){
+    io.sockets.emit('chat',data);
+  });
+
+  socket.on('typing',function(data){
+    socket.broadcast.emit('typing',data);
+  });
+
+});
 
